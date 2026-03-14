@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Accounting</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- =====================================================================
+     TOP NAV / HEADER
+===================================================================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <span class="logo">💰 Simple Accounting</span>
+    <nav class="main-nav" id="mainNav">
+      <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+      <button class="nav-btn" data-section="customers">Customers</button>
+      <button class="nav-btn" data-section="suppliers">Suppliers</button>
+      <button class="nav-btn" data-section="invoices">Invoices</button>
+      <button class="nav-btn" data-section="expenses">Expenses</button>
+      <button class="nav-btn" data-section="reports">Reports</button>
+      <button class="nav-btn" data-section="backup">Backup</button>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main class="site-main">
+
+  <!-- ==================================================================
+       LOCAL STORAGE WARNING BANNER
+  ================================================================== -->
+  <div class="banner-warning">
+    ⚠️ Data is stored <strong>only in this browser</strong> (localStorage).
+    Use the <a href="#" onclick="showSection('backup')">Backup</a> page to export a JSON backup regularly.
+  </div>
+
+  <!-- ==================================================================
+       SECTION: DASHBOARD
+  ================================================================== -->
+  <section id="section-dashboard" class="app-section active">
+    <h2>Dashboard</h2>
+    <div class="summary-cards" id="dashboardCards">
+      <!-- Filled by JS -->
+    </div>
+    <div class="dashboard-tables">
+      <div class="dash-col">
+        <h3>Recent Invoices</h3>
+        <table class="data-table" id="dashRecentInvoices">
+          <thead><tr><th>#</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="dash-col">
+        <h3>Recent Expenses</h3>
+        <table class="data-table" id="dashRecentExpenses">
+          <thead><tr><th>Date</th><th>Supplier</th><th>Category</th><th>Amount</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: CUSTOMERS
+  ================================================================== -->
+  <section id="section-customers" class="app-section">
+    <h2>Customers</h2>
+    <button class="btn btn-primary" onclick="openModal('customerModal')">+ Add Customer</button>
+    <table class="data-table" id="customersTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: SUPPLIERS
+  ================================================================== -->
+  <section id="section-suppliers" class="app-section">
+    <h2>Suppliers</h2>
+    <button class="btn btn-primary" onclick="openModal('supplierModal')">+ Add Supplier</button>
+    <table class="data-table" id="suppliersTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: INVOICES
+  ================================================================== -->
+  <section id="section-invoices" class="app-section">
+    <h2>Invoices</h2>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="openInvoiceModal()">+ New Invoice</button>
+      <button class="btn btn-secondary" onclick="exportInvoicesCSV()">Export CSV</button>
+      <label class="btn btn-secondary">
+        Import CSV <input type="file" accept=".csv" style="display:none" onchange="importInvoicesCSV(event)" />
+      </label>
+    </div>
+    <!-- Filter row -->
+    <div class="filter-row">
+      <label>Status:
+        <select id="invoiceFilterStatus" onchange="renderInvoices()">
+          <option value="">All</option>
+          <option value="draft">Draft</option>
+          <option value="issued">Issued</option>
+          <option value="paid">Paid</option>
+        </select>
+      </label>
+      <label>From: <input type="date" id="invoiceFilterFrom" onchange="renderInvoices()" /></label>
+      <label>To: <input type="date" id="invoiceFilterTo" onchange="renderInvoices()" /></label>
+    </div>
+    <table class="data-table" id="invoicesTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>Subtotal</th>
+          <th>Tax</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: EXPENSES
+  ================================================================== -->
+  <section id="section-expenses" class="app-section">
+    <h2>Expenses</h2>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="openExpenseModal()">+ New Expense</button>
+      <button class="btn btn-secondary" onclick="exportExpensesCSV()">Export CSV</button>
+      <label class="btn btn-secondary">
+        Import CSV <input type="file" accept=".csv" style="display:none" onchange="importExpensesCSV(event)" />
+      </label>
+    </div>
+    <!-- Filter row -->
+    <div class="filter-row">
+      <label>Category:
+        <select id="expenseFilterCategory" onchange="renderExpenses()">
+          <option value="">All</option>
+        </select>
+      </label>
+      <label>From: <input type="date" id="expenseFilterFrom" onchange="renderExpenses()" /></label>
+      <label>To: <input type="date" id="expenseFilterTo" onchange="renderExpenses()" /></label>
+    </div>
+    <table class="data-table" id="expensesTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Supplier</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: REPORTS
+  ================================================================== -->
+  <section id="section-reports" class="app-section">
+    <h2>Reports</h2>
+    <div class="filter-row">
+      <label>From: <input type="date" id="reportFrom" /></label>
+      <label>To: <input type="date" id="reportTo" /></label>
+      <button class="btn btn-primary" onclick="generateReport()">Generate</button>
+    </div>
+
+    <div id="reportOutput" class="report-output" style="display:none">
+      <h3>Profit &amp; Loss</h3>
+      <table class="data-table report-table" id="plTable">
+        <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+        <tbody></tbody>
+        <tfoot id="plFoot"></tfoot>
+      </table>
+
+      <h3>Balance Summary</h3>
+      <table class="data-table report-table" id="balanceTable">
+        <thead><tr><th>Item</th><th>Amount</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h3>Expenses by Category</h3>
+      <table class="data-table report-table" id="expCatTable">
+        <thead><tr><th>Category</th><th>Total</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       SECTION: BACKUP / RESTORE
+  ================================================================== -->
+  <section id="section-backup" class="app-section">
+    <h2>Backup &amp; Restore</h2>
+    <p class="notice">
+      All data lives in <strong>this browser's localStorage</strong> only.
+      Clearing browser data, switching devices, or using a different browser
+      will result in data loss. Export a JSON backup regularly.
+    </p>
+
+    <div class="backup-actions">
+      <div class="backup-card">
+        <h3>💾 Export Full Backup (JSON)</h3>
+        <p>Downloads all customers, suppliers, invoices, and expenses as a single JSON file.</p>
+        <button class="btn btn-primary" onclick="exportJSON()">Export JSON Backup</button>
+      </div>
+      <div class="backup-card">
+        <h3>📥 Import / Restore (JSON)</h3>
+        <p>
+          Restores data from a previously exported JSON backup.
+          <strong>This will overwrite all current data.</strong>
+        </p>
+        <label class="btn btn-secondary">
+          Import JSON Backup
+          <input type="file" accept=".json" style="display:none" onchange="importJSON(event)" />
+        </label>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="backup-card danger-zone">
+      <h3>🗑️ Clear All Data</h3>
+      <p>Permanently deletes all data from localStorage. Make sure you have a backup first!</p>
+      <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================================================================
+     MODAL: CUSTOMER FORM
+================================================================== -->
+<div class="modal-overlay" id="customerModal">
+  <div class="modal">
+    <h3 id="customerModalTitle">Add Customer</h3>
+    <form id="customerForm" onsubmit="saveCustomer(event)">
+      <input type="hidden" id="customerId" />
+      <div class="form-group">
+        <label for="customerName">Name *</label>
+        <input type="text" id="customerName" required placeholder="Full name or company" />
+      </div>
+      <div class="form-group">
+        <label for="customerEmail">Email</label>
+        <input type="email" id="customerEmail" placeholder="email@example.com" />
+      </div>
+      <div class="form-group">
+        <label for="customerPhone">Phone</label>
+        <input type="text" id="customerPhone" placeholder="+1 555 000 0000" />
+      </div>
+      <div class="form-group">
+        <label for="customerNotes">Notes</label>
+        <textarea id="customerNotes" rows="3" placeholder="Optional notes…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================================================================
+     MODAL: SUPPLIER FORM
+================================================================== -->
+<div class="modal-overlay" id="supplierModal">
+  <div class="modal">
+    <h3 id="supplierModalTitle">Add Supplier</h3>
+    <form id="supplierForm" onsubmit="saveSupplier(event)">
+      <input type="hidden" id="supplierId" />
+      <div class="form-group">
+        <label for="supplierName">Name *</label>
+        <input type="text" id="supplierName" required placeholder="Supplier name" />
+      </div>
+      <div class="form-group">
+        <label for="supplierEmail">Email</label>
+        <input type="email" id="supplierEmail" placeholder="email@example.com" />
+      </div>
+      <div class="form-group">
+        <label for="supplierPhone">Phone</label>
+        <input type="text" id="supplierPhone" placeholder="+1 555 000 0000" />
+      </div>
+      <div class="form-group">
+        <label for="supplierNotes">Notes</label>
+        <textarea id="supplierNotes" rows="3" placeholder="Optional notes…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('supplierModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================================================================
+     MODAL: INVOICE FORM
+================================================================== -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal modal-wide">
+    <h3 id="invoiceModalTitle">New Invoice</h3>
+    <form id="invoiceForm" onsubmit="saveInvoice(event)">
+      <input type="hidden" id="invoiceId" />
+      <div class="form-row">
+        <div class="form-group">
+          <label for="invoiceDate">Date *</label>
+          <input type="date" id="invoiceDate" required />
+        </div>
+        <div class="form-group">
+          <label for="invoiceCustomer">Customer *</label>
+          <select id="invoiceCustomer" required></select>
+        </div>
+        <div class="form-group">
+          <label for="invoiceStatus">Status</label>
+          <select id="invoiceStatus">
+            <option value="draft">Draft</option>
+            <option value="issued">Issued</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="invoiceNotes">Notes</label>
+        <input type="text" id="invoiceNotes" placeholder="Optional invoice notes" />
+      </div>
+
+      <!-- Line items table -->
+      <h4>Line Items</h4>
+      <table class="data-table" id="lineItemsTable">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Line Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="lineItemsBody">
+          <!-- rows added by JS -->
+        </tbody>
+      </table>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addLineItem()">+ Add Line</button>
+
+      <div class="invoice-totals">
+        <div class="form-group">
+          <label for="invoiceTaxRate">Tax Rate (%)</label>
+          <input type="number" id="invoiceTaxRate" min="0" max="100" step="0.01" value="0"
+                 oninput="recalcInvoiceTotals()" />
+        </div>
+        <div class="totals-display">
+          <span>Subtotal: <strong id="invoiceSubtotal">0.00</strong></span>
+          <span>Tax: <strong id="invoiceTaxAmt">0.00</strong></span>
+          <span>Total: <strong id="invoiceTotal">0.00</strong></span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save Invoice</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================================================================
+     MODAL: EXPENSE FORM
+================================================================== -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <h3 id="expenseModalTitle">New Expense</h3>
+    <form id="expenseForm" onsubmit="saveExpense(event)">
+      <input type="hidden" id="expenseId" />
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expenseDate">Date *</label>
+          <input type="date" id="expenseDate" required />
+        </div>
+        <div class="form-group">
+          <label for="expenseSupplier">Supplier</label>
+          <select id="expenseSupplier">
+            <option value="">— None —</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expenseCategory">Category *</label>
+          <select id="expenseCategory" required>
+            <option value="Office Supplies">Office Supplies</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Rent">Rent</option>
+            <option value="Salaries">Salaries</option>
+            <option value="Travel">Travel</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Software">Software</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Professional Services">Professional Services</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expenseAmount">Amount *</label>
+          <input type="number" id="expenseAmount" min="0" step="0.01" required placeholder="0.00" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="expenseNotes">Notes</label>
+        <textarea id="expenseNotes" rows="3" placeholder="Optional notes…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('expenseModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================================================================
+     MODAL: INVOICE VIEWER (read-only detail view)
+================================================================== -->
+<div class="modal-overlay" id="invoiceViewModal">
+  <div class="modal modal-wide">
+    <h3>Invoice Detail</h3>
+    <div id="invoiceViewContent"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal('invoiceViewModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
