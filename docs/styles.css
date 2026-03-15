@@ -1,0 +1,635 @@
+/* ==========================================================================
+   Simple Accounting App — styles.css
+   Plain, readable CSS with a clean responsive layout.
+   Sections are clearly separated by comments for easy maintenance.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (variables)
+-------------------------------------------------------------------------- */
+:root {
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-border: #dde1e7;
+  --color-text: #1e2329;
+  --color-text-muted: #6b7280;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-secondary: #6b7280;
+  --color-secondary-dark: #4b5563;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-danger-dark: #b91c1c;
+  --color-paid: #dcfce7;
+  --color-paid-text: #15803d;
+  --color-issued: #dbeafe;
+  --color-issued-text: #1d4ed8;
+  --color-draft: #f3f4f6;
+  --color-draft-text: #374151;
+  --radius: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,.18);
+  --header-height: 56px;
+  --transition: 0.15s ease;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET / BASE
+-------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+h4 {
+  font-size: 1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER / NAV
+-------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+  height: var(--header-height);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Navigation buttons — horizontal list */
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  flex: 1;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.nav-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Hamburger toggle — hidden on wide screens */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   4. MAIN CONTENT AREA
+-------------------------------------------------------------------------- */
+.site-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. WARNING BANNER
+-------------------------------------------------------------------------- */
+.banner-warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.88rem;
+  color: #92400e;
+}
+
+.banner-warning a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   6. SECTIONS — show/hide
+-------------------------------------------------------------------------- */
+.app-section {
+  display: none;
+}
+
+.app-section.active {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   7. BUTTONS
+-------------------------------------------------------------------------- */
+.btn {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background var(--transition), border-color var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg);
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: #fff;
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background: var(--color-danger-dark);
+  border-color: var(--color-danger-dark);
+}
+
+.btn-sm {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.btn-icon {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.82rem;
+  background: none;
+  border: 1px solid var(--color-border);
+}
+
+.btn-icon:hover {
+  background: var(--color-bg);
+}
+
+/* --------------------------------------------------------------------------
+   8. TOOLBAR (row of buttons + filters above a table)
+-------------------------------------------------------------------------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.filter-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.filter-row select,
+.filter-row input[type="date"] {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  background: var(--color-surface);
+}
+
+/* --------------------------------------------------------------------------
+   9. TABLES
+-------------------------------------------------------------------------- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+.data-table th {
+  background: var(--color-bg);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Responsive table scroll on small screens */
+@media (max-width: 700px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. STATUS BADGES
+-------------------------------------------------------------------------- */
+.badge {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-paid    { background: var(--color-paid);   color: var(--color-paid-text); }
+.badge-issued  { background: var(--color-issued); color: var(--color-issued-text); }
+.badge-draft   { background: var(--color-draft);  color: var(--color-draft-text); }
+
+/* --------------------------------------------------------------------------
+   11. DASHBOARD CARDS
+-------------------------------------------------------------------------- */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.summary-card .card-label {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.summary-card .card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.card-value.positive { color: var(--color-success); }
+.card-value.negative { color: var(--color-danger); }
+
+/* Dashboard two-column layout */
+.dashboard-tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .dashboard-tables {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. MODALS
+-------------------------------------------------------------------------- */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-modal);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-wide {
+  max-width: 800px;
+}
+
+.modal h3 {
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. FORMS (inside modals and pages)
+-------------------------------------------------------------------------- */
+.form-group {
+  margin-bottom: 0.85rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: var(--color-text-muted);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Two-column form row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 500px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   14. INVOICE LINE ITEMS (inside modal)
+-------------------------------------------------------------------------- */
+.invoice-totals {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.invoice-totals .form-group {
+  margin-bottom: 0;
+  min-width: 140px;
+}
+
+.totals-display {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.1rem;
+}
+
+.totals-display span strong {
+  font-size: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   15. REPORTS
+-------------------------------------------------------------------------- */
+.report-output {
+  margin-top: 1.25rem;
+}
+
+.report-table {
+  max-width: 640px;
+}
+
+.report-table tfoot tr td {
+  font-weight: 700;
+  border-top: 2px solid var(--color-border);
+}
+
+/* --------------------------------------------------------------------------
+   16. BACKUP PAGE
+-------------------------------------------------------------------------- */
+.notice {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  color: #1e40af;
+}
+
+.backup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .backup-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.backup-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.backup-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.backup-card p {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.85rem;
+}
+
+.danger-zone {
+  border-color: #fecaca;
+  background: #fff5f5;
+}
+
+/* --------------------------------------------------------------------------
+   17. RESPONSIVE — MOBILE NAV
+-------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow);
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 2px;
+    z-index: 99;
+  }
+
+  .main-nav.open {
+    display: flex;
+  }
+
+  .nav-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. MISC UTILITY CLASSES
+-------------------------------------------------------------------------- */
+.text-right { text-align: right; }
+.text-muted  { color: var(--color-text-muted); }
+.mt-1 { margin-top: 0.5rem; }
+
+/* Empty state message inside table */
+.empty-row td {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 1.5rem;
+  font-style: italic;
+}
